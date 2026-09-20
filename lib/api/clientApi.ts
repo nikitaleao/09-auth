@@ -2,6 +2,15 @@ import { api } from './api';
 import { Note, NewNote, FetchNotesResponse } from '@/types/note';
 import { User } from '@/types/user';
 
+export interface AuthCredentials {
+  email: string;
+  password: string;
+}
+
+export interface UpdateUserPayload {
+  username: string;
+}
+
 export const fetchNotes = async (
   search: string = '',
   page: number = 1,
@@ -36,12 +45,12 @@ export const deleteNote = async (id: string): Promise<Note> => {
   return response.data;
 };
 
-export const register = async (data: Record<string, string>): Promise<User> => {
+export const register = async (data: AuthCredentials): Promise<User> => {
   const response = await api.post<User>('/auth/register', data);
   return response.data;
 };
 
-export const login = async (data: Record<string, string>): Promise<User> => {
+export const login = async (data: AuthCredentials): Promise<User> => {
   const response = await api.post<User>('/auth/login', data);
   return response.data;
 };
@@ -60,7 +69,7 @@ export const getMe = async (): Promise<User> => {
   return response.data;
 };
 
-export const updateMe = async (data: Partial<User>): Promise<User> => {
+export const updateMe = async (data: UpdateUserPayload): Promise<User> => {
   const response = await api.patch<User>('/users/me', data);
   return response.data;
 };

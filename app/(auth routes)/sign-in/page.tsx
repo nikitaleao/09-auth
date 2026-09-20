@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '@/lib/api/clientApi';
 import { useAuthStore } from '@/lib/store/authStore';
-import css from './SignIn.module.css'; // Скопируй соответствующий css-модуль из стилей HW-09
+import css from './SignIn.module.css';
 
 export default function SignInPage() {
   const router = useRouter();

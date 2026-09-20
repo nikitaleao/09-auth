@@ -20,7 +20,6 @@ export default function NotePreviewClient({ id }: NotePreviewClientProps) {
   } = useQuery({
     queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),
-    refetchOnMount: false,
   });
 
   const handleClose = () => {
@@ -28,21 +27,26 @@ export default function NotePreviewClient({ id }: NotePreviewClientProps) {
   };
 
   return (
-    <Modal isOpen={true} onClose={handleClose}>
-      <div className={css.previewContainer}>
-        {isLoading && <p>Loading note details...</p>}
-        {isError && (
-          <div className={css.error}>Failed to load note details.</div>
-        )}
+    <Modal isOpen onClose={handleClose}>
+      <div className={css.container}>
+        <button
+          type="button"
+          onClick={handleClose}
+          className={css.closeButton}
+          aria-label="Close modal"
+        >
+          &times;
+        </button>
+
+        {isLoading && <p>Loading note...</p>}
+        {isError && <p>Failed to load note preview.</p>}
+
         {note && (
-          <>
-            <h2 className={css.title}>{note.title}</h2>
-            <p className={css.tag}>Tag: {note.tag}</p>
-            <p className={css.content}>{note.content}</p>
-            <p className={css.date}>
-              Created: {new Date(note.createdAt).toLocaleDateString()}
-            </p>
-          </>
+          <div className={css.content}>
+            <h2>{note.title}</h2>
+            <p className={css.tag}>{note.tag}</p>
+            <p className={css.text}>{note.content}</p>
+          </div>
         )}
       </div>
     </Modal>

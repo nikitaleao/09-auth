@@ -1,6 +1,7 @@
 import 'server-only';
 import { api } from './api';
 import { cookies } from 'next/headers';
+import { AxiosResponse } from 'axios';
 import { Note, FetchNotesResponse } from '@/types/note';
 import { User } from '@/types/user';
 
@@ -35,10 +36,9 @@ export const fetchNoteById = async (id: string): Promise<Note> => {
   return response.data;
 };
 
-export const checkSession = async (): Promise<User | null> => {
+export const checkSession = async (): Promise<AxiosResponse<User | null>> => {
   const authHeaders = await getAuthHeaders();
-  const response = await api.get<User>('/auth/session', authHeaders);
-  return response.data;
+  return await api.get<User | null>('/auth/session', authHeaders);
 };
 
 export const getMe = async (): Promise<User> => {
