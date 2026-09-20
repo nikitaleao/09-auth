@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { checkSession } from './lib/api/serverApi';
-import parse from 'set-cookie-parser';
+import * as cookie from 'cookie';
 
 const privateRoutes = ['/profile', '/notes'];
 const publicRoutes = ['/sign-in', '/sign-up'];
@@ -20,19 +20,32 @@ export async function proxy(request: NextRequest) {
     try {
       const sessionResponse = await checkSession();
 
-      const setCookieHeaders = sessionResponse.headers['set-cookie'];
+      const setCookieHeader = sessionResponse.headers['set-cookie'];
 
-      if (setCookieHeaders) {
-        const parsedCookies = parse.splitCookiesString(setCookieHeaders);
+      if (setCookieHeader) {
+        const rawCookies = Array.isArray(setCookieHeader)
+          ? setCookieHeader
+          : [setCookieHeader];
 
-        parsedCookies.forEach(cookieStr => {
-          const [parsedCookie] = parse.parse([cookieStr]);
-          if (parsedCookie) {
+        rawCookies.forEach(cookieStr => {
+          const parsedCookie = cookie.parseSetCookie(cookieStr);
+
+          if (
+            parsedCookie &&
+            parsedCookie.name &&
+            parsedCookie.value !== undefined
+          ) {
             response.cookies.set(parsedCookie.name, parsedCookie.value, {
               path: parsedCookie.path || '/',
               httpOnly: parsedCookie.httpOnly,
               secure: parsedCookie.secure,
-              sameSite: parsedCookie.sameSite as 'strict' | 'lax' | 'none',
+              sameSite:
+                typeof parsedCookie.sameSite === 'string'
+                  ? (parsedCookie.sameSite.toLowerCase() as
+                      | 'strict'
+                      | 'lax'
+                      | 'none')
+                  : undefined,
               expires: parsedCookie.expires,
               maxAge: parsedCookie.maxAge,
             });
