@@ -28,7 +28,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "../08-zustand/lib/store/authStore.ts"
   ],
   "exclude": ["node_modules"]
 }
