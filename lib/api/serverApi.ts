@@ -1,3 +1,4 @@
+import 'server-only';
 import { api } from './api';
 import { cookies } from 'next/headers';
 import { Note, FetchNotesResponse } from '@/types/note';
